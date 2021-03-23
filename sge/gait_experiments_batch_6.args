@@ -1,0 +1,5 @@
+-d ./data/Phase-1_AIST_atMM.mat -o ./output/Phase-1_AIST_atMM.mat -s 10 -a CnnAshort
+# BELOW LINES DO NOT WORK
+-d ./data/Phase-2_GaitRec-Gutenberg-AIST_atMM.mat -o ./output/Phase-2_GaitRec-Gutenberg-AIST_atMM.mat -s 3 -a SvmLinearL2C1e0
+-d ./data/Phase-2_GaitRec-Gutenberg-AIST_atMM.mat -o ./output/Phase-2_GaitRec-Gutenberg-AIST_atMM.mat -s 3 -a SvmLinearL2C1em1
+-d ./data/Phase-2_GaitRec-Gutenberg-AIST_atMM.mat -o ./output/Phase-2_GaitRec-Gutenberg-AIST_atMM.mat -s 3 -a SvmLinearL2C1ep1

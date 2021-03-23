@@ -1,0 +1,1 @@
+-d ./data/Phase-3_GaitRec-Gutenberg-AIST_atMM.mat -o ./output/Phase-3_GaitRec-Gutenberg-AIST_atMM.mat -s 10 -a CnnAshort

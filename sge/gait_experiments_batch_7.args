@@ -1,0 +1,2 @@
+# NOTE: THIS ONE DOES NOT RUN. DATA MISMATCH BETWEEN SUBJECTS AND GENDER!
+-d ./data/Phase-2_GaitRec-Gutenberg-AIST_atMM.mat -o ./output/Phase-2_GaitRec-Gutenberg-AIST_atMM.mat -s 3 -a CnnC3
