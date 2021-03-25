@@ -5,6 +5,7 @@ import scipy
 import time
 import types
 import sys
+from termcolor import cprint, colored
 from model.base import ModelTraining
 
 
@@ -12,7 +13,8 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
                         output_root_dir, data_name, target_name,
                         training_programme=None,
                         do_this_if_model_exists='skip', save_data_in_output_dir=True,
-                        force_device_for_training=None, force_device_for_evaluation=None):
+                        force_device_for_training=None, force_device_for_evaluation=None,
+                        do_xval=True):
     """
     This script trains and evaluates a model using the given data X,Y over all splits as determined in S
 
@@ -60,6 +62,8 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
 
     force_device_for_evaluation: str - values can either gpu or cpu. force the use of this device during evaluaton.
         here, the use of the GPU is almost always recommended due to the large batch size to be processed.
+
+    do_xval: bool - controls wheter all data splits are run through a cross-evaluation scheme, or only data splits 0-2 are to be treated as dedicated training, validation and test splits
     """
 
     # some basic sanity checks
@@ -149,6 +153,10 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
 
         #dump evaluation results to mat file
         scipy.io.savemat('{}/outputs.mat'.format(model.path_dir()), results)
+        if not do_xval:
+            cprint(colored('Cross-Validation has been disabled. Terminating after first iteration.', 'yellow'))
+            #terminate here after one iteration, e.g. in case predetermined splits have been given.
+            break
 
 # end of train_test_cycle
 
