@@ -67,6 +67,7 @@ else:
         # Feature -> Bodenreaktionskraft
         X_GRF_AV = gaitdata['Feature']
         Label_GRF_AV = gaitdata['Feature_GRF_AV_Label'][0][0]   # x 6 channel label
+        cprint(colored('Sample count is : {}'.format(X_GRF_AV.shape[0]), 'yellow'))
 
         #transposing axes, to obtain N x time x channel axis ordering, as in Horst et al. 2019
         X_GRF_AV = numpy.transpose(X_GRF_AV, [0, 2, 1])         # N x T x C
@@ -95,6 +96,8 @@ else:
 
         #load matlab data as dictionary using scipy: 0 = test, 1 = val/train
         gaitdata = [scio.loadmat(data_paths[i]) for i in [0,1,1]]
+        data_sizes = [g['Feature'].shape[0] for g in gaitdata]
+        cprint(colored('Sample count of Test / Val / Train is :  {} / {} / {}'.format(*data_sizes), 'yellow'))
 
         # Feature -> Bodenreaktionskraft
         X_GRF_AV = numpy.concatenate([g['Feature'] for g in gaitdata], axis=0)
@@ -112,7 +115,7 @@ else:
 
         SexIndexSplits = []
         i_start = 0
-        for d_size in [g['Feature'].shape[0] for g in gaitdata]:
+        for d_size in data_sizes:
             SexIndexSplits.append([i for i in range(i_start, i_start + d_size)])
             i_start += d_size
 
@@ -130,6 +133,8 @@ else:
 
         #load matlab data as dictionary using scipy
         gaitdata = [scio.loadmat(data_paths[i]) for i in range(3)]
+        data_sizes = [g['Feature'].shape[0] for g in gaitdata]
+        cprint(colored('Sample count of Test / Val / Train is :  {} / {} / {}'.format(*data_sizes), 'yellow'))
 
         # Feature -> Bodenreaktionskraft
         X_GRF_AV = numpy.concatenate([g['Feature'] for g in gaitdata], axis=0)
@@ -147,7 +152,7 @@ else:
 
         SexIndexSplits = []
         i_start = 0
-        for d_size in [g['Feature'].shape[0] for g in gaitdata]:
+        for d_size in data_sizes:
             SexIndexSplits.append([i for i in range(i_start, i_start + d_size)])
             i_start += d_size
 
