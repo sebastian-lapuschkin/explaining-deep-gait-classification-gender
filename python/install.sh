@@ -10,7 +10,7 @@
 
 # Option A: CPU Only
 # CREATES: an environment called "gait", for running the code on CPU hardware
-conda create -n gait -c conda-forge python=3.* numpy matplotlib prettytable flake8 pylint rope scikit-learn scikit-image scipy natsort
+conda create -n gait -c conda-forge python=3.* numpy matplotlib prettytable flake8 pylint rope scikit-learn scikit-image scipy natsort termcolor
 
 
 
