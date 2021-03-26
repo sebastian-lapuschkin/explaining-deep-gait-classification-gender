@@ -1,4 +1,4 @@
-# This is a WIP progress repo
+# This is a WIP repo
 and effectively a fork of
 [this repo](https://github.com/sebastian-lapuschkin/explaining-deep-gait-classification), with modifications from @fabian-horst
 
