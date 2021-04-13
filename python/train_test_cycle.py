@@ -8,13 +8,17 @@ import sys
 from termcolor import cprint, colored
 from model.base import ModelTraining
 
+import numpy as np
+from sklearn import tree
+
+
 
 def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
                         output_root_dir, data_name, target_name,
                         training_programme=None,
                         do_this_if_model_exists='skip', save_data_in_output_dir=True,
                         force_device_for_training=None, force_device_for_evaluation=None,
-                        do_xval=True):
+                        do_xval=True, decision_tree=False):
     """
     This script trains and evaluates a model using the given data X,Y over all splits as determined in S
 
@@ -64,6 +68,8 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
         here, the use of the GPU is almost always recommended due to the large batch size to be processed.
 
     do_xval: bool - controls wheter all data splits are run through a cross-evaluation scheme, or only data splits 0-2 are to be treated as dedicated training, validation and test splits
+
+    decision_tree: bool - if True trains a decision tree model as a baseline/comparison option for the target model
     """
 
     # some basic sanity checks
@@ -153,6 +159,78 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
 
         #dump evaluation results to mat file
         scipy.io.savemat('{}/outputs.mat'.format(model.path_dir()), results)
+
+
+        if decision_tree and (not model.exists() or (model.exists() and do_this_if_model_exists == 'retrain')):
+            # DTree training and evaluation currently limited to settings where also the target model is trained.
+            print('Training and evaluating alternative decision tree model')
+            t_start = time.time()
+
+            random_state = 42
+            #prep data for DT models
+            x_train_dt = np.reshape(x_train, [x_train.shape[0], -1])
+            x_val_dt = np.reshape(x_val, [x_val.shape[0], -1])
+            x_test_dt = np.reshape(x_test, [x_test.shape[0], -1])
+
+            #some models (SVM flatten the y_train. we need to reinstate this. here, in this case)
+            if len(y_train.shape) == 1:
+                tmp = np.zeros((y_train.shape[0],y_val.shape[1])) # n_samples x n_classes
+                tmp[np.arange(y_train.shape[0]), y_train] = 1
+                y_train = tmp
+
+            clf = tree.DecisionTreeClassifier(random_state=random_state)
+            clf.fit(x_train_dt, y_train)
+
+            y_pred_train = clf.predict(x_train_dt)
+            acc_train = helpers.accuracy(y_pred_train, y_train)
+
+            y_pred_val = clf.predict(x_val_dt)
+            acc_test = helpers.accuracy(y_pred_val, y_val)
+
+            y_pred_test = clf.predict(x_test_dt)
+            acc_val = helpers.accuracy(y_pred_test, y_test)
+
+            importances = clf.feature_importances_
+
+            #collect results
+            dtree_results = { 'acc_train':acc_train,
+                              'acc_test':acc_test,
+                              'acc_val':acc_val,
+                              'y_pred_train':y_pred_test,
+                              'y_pred_test':y_pred_test,
+                              'y_pred_val':y_pred_val,
+                              'importances':importances
+                            }
+
+            t_end = time.time()
+
+            #save results in file, in parallel to outputs.mat for the target model
+            scipy.io.savemat('{}/outputs_dtree.mat'.format(model.path_dir()), dtree_results)
+
+            # write report for terminal printing. only test_accuracy (ie the first line after the header) will be parsed by eval_score_logs
+            dtree_report  = '\n{}\n'.format(model.path_dir().replace('/', ' ').replace(model_class.__name__, 'comp.DTree:{}'.format(model_class.__name__)))
+            dtree_report += 'test accuracy : {}\n'.format(dtree_results['acc_test'])
+            dtree_report += 'val accuracy : {}\n'.format(dtree_results['acc_val'])
+            dtree_report += 'train accuracy : {}\n'.format(dtree_results['acc_train'])
+            dtree_report += 'train-evaluation-sequence done after {}s\n\n'.format(t_end-t_start)
+            print(dtree_report)
+
+            #dump results to output of this run
+            #again, in parallel to scores.txt for the target model
+            with open('{}/scores_dtree.txt'.format(model.path_dir()), 'w') as f: f.write(dtree_report)
+
+            #also write dree report into logfile
+            logfile.write(dtree_report); logfile.flush()
+
+
+
+            # use if retrained on validation and training folds
+            # NOTE: IGNORED FOR NOW.
+            #clf = tree.DecisionTreeClassifier(random_state=random_state)
+            #clf.fit(np.vstack((X_train,X_val)),np.concatenate((y_train,y_val)))
+
+
+
         if not do_xval:
             cprint(colored('Cross-Validation has been disabled. Terminating after first iteration.', 'yellow'))
             #terminate here after one iteration, e.g. in case predetermined splits have been given.

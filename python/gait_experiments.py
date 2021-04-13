@@ -45,6 +45,7 @@ parser.add_argument('-ft', '--force_training_device', type=str, default=None, he
 parser.add_argument('-fe', '--force_evaluation_device', type=str, default=None, help='Force evaluat to be performed on a specific device, despite the default chosen numeric backend? Options: cpu, gpu, None. Default: None. NOTE: Execution on GPU is beneficial in almost all cases, due to the massive across-batch-parallelism.')
 parser.add_argument('-rc', '--record_call', type=bool, default=False, help='Whether to record the current call to this script in an ouput file specified via -rf or --record-file. Default: False. Only records in case the script terminates gracefully')
 parser.add_argument('-rf', '--record_file', type=str, default='./command_history.txt', help='Determines the file name into which the current call to this script is recorded')
+parser.add_argument('-dt', '--decision_tree', type=bool, default=False, help='Trains a Decision tree model operating on the same data (folds) as the target model and reports results and feature importances in parallel.')
 ARGS = parser.parse_args()
 
 
@@ -209,7 +210,8 @@ train_test_cycle.run_train_test_cycle(
         do_this_if_model_exists=ARGS.model_exists,
         force_device_for_training=ARGS.force_training_device,
         force_device_for_evaluation=ARGS.force_evaluation_device, # computing heatmaps on gpu is always worth it for any model. requires a gpu, obviously
-        do_xval=do_xval # True if one blob of data is given. False if dedicated splits have been loaded
+        do_xval=do_xval, # True if one blob of data is given. False if dedicated splits have been loaded
+        decision_tree=ARGS.decision_tree # if True trains a decision tree model as a baseline/comparison option for the target model
 )
 eval_score_logs.run(ARGS.output_dir)
 
