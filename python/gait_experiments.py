@@ -58,7 +58,10 @@ if ARGS.data_path is None:
     exit()
 else:
     print('Whitespace-separating input data paths...')
-    data_paths = ARGS.data_path[0].split()
+    data_paths = []
+    for dp in ARGS.data_path:
+        data_paths.extend(dp.split(' '))
+
     if len(data_paths) == 1:
         cprint(colored('One (1) input data path recognized: "{}". Generating data splits as per -s/--splits and -rs/--random_seed parameters.'.format(data_paths[0]), 'yellow'))
 
