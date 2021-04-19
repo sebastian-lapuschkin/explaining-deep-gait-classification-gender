@@ -124,8 +124,8 @@ else:
             i_start += d_size
 
         SubjectIndexSplits = [] #dummy
-        Y_Subject_trimmed = []  #dummy
-        Y_Subject = numpy.zeros((Y_Sex.shape[0],)) #dummy
+        Y_Subject_trimmed = numpy.concatenate([g['Target_Subject'] for g in gaitdata], axis=0)
+        Y_Subject = Y_Subject_trimmed
         do_xval = False # no xval with precomputed and dedicated data splits
 
 
@@ -161,8 +161,8 @@ else:
             i_start += d_size
 
         SubjectIndexSplits = [] #dummy
-        Y_Subject_trimmed = []  #dummy
-        Y_Subject = numpy.zeros((Y_Sex.shape[0],)) #dummy
+        Y_Subject_trimmed = numpy.concatenate([g['Target_Subject'] for g in gaitdata], axis=0)
+        Y_Subject = Y_Subject_trimmed
         do_xval = False # no xval with precomputed and dedicated data splits
 
 

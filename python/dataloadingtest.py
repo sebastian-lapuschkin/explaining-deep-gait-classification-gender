@@ -9,7 +9,7 @@ sys.argv += ['-d', './data/Phase-1_AIST_atMM_8.mat ./data/Phase-1_GaitRec_atMM_8
              '-o', './testing/blabla.mat',
              '-s', '3', #should be ignored with multiple data entries given
              '-a', 'SvmLinearL2C1e0',
-             '-me', 'evaluate',
+             '-me', 'retrain',
              #'-dt', None,
              '-dt', '1'
              ]
