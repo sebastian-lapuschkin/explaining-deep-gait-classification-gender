@@ -205,7 +205,7 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
             dtree_results = { 'acc_train':acc_train,
                               'acc_test':acc_test,
                               'acc_val':acc_val,
-                              'y_pred_train':y_pred_test,
+                              'y_pred_train':y_pred_train,
                               'y_pred_test':y_pred_test,
                               'y_pred_val':y_pred_val,
                               'importances':importances
