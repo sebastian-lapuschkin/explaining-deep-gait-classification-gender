@@ -94,6 +94,11 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
 
     # start main loop and execute training/evaluation for all the splits definied in S
     for split_index in range(len(S)):
+        if split_index > 0 and not do_xval:
+            cprint(colored('Cross-Validation has been disabled. Terminating after first iteration.', 'yellow'))
+            #terminate here after one iteration, e.g. in case predetermined splits have been given.
+            break
+
         model = model_class(output_root_dir, data_name, target_name, split_index)
         model_dir = model.path_dir()
         helpers.ensure_dir_exists(model_dir)
@@ -233,12 +238,6 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
             #clf = tree.DecisionTreeClassifier(random_state=random_state)
             #clf.fit(np.vstack((X_train,X_val)),np.concatenate((y_train,y_val)))
 
-
-
-        if not do_xval:
-            cprint(colored('Cross-Validation has been disabled. Terminating after first iteration.', 'yellow'))
-            #terminate here after one iteration, e.g. in case predetermined splits have been given.
-            break
 
 # end of train_test_cycle
 
