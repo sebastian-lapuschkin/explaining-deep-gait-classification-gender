@@ -161,7 +161,7 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
         scipy.io.savemat('{}/outputs.mat'.format(model.path_dir()), results)
 
 
-        if decision_tree and (not model.exists() or (model.exists() and do_this_if_model_exists == 'retrain')):
+        if decision_tree: # and (not model.exists() or (model.exists() and do_this_if_model_exists == 'retrain')):
             # DTree training and evaluation currently limited to settings where also the target model is trained.
             print('Training and evaluating alternative decision tree model')
             t_start = time.time()
