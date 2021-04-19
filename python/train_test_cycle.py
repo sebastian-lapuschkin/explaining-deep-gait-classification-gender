@@ -167,7 +167,8 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
             t_start = time.time()
 
             # make sure all data lives in CPU space for the DT model
-            x_train, x_val, x_test, y_train, y_val, y_test = helpers.arrays_to_numpy(x_train, x_val, x_test, y_train, y_val, y_test)
+            x_train, x_val, x_test, y_train, y_val, y_test =\
+                 helpers.arrays_to_numpy(x_train, x_val, x_test, y_train, y_val, y_test)
 
             random_state = 42
             #prep data for DT models
