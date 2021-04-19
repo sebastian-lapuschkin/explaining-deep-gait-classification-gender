@@ -189,10 +189,10 @@ def run_train_test_cycle(X, Y, L, LS, S, P, model_class,
             acc_train = helpers.accuracy(y_pred_train, y_train)
 
             y_pred_val = clf.predict(x_val_dt)
-            acc_test = helpers.accuracy(y_pred_val, y_val)
+            acc_val = helpers.accuracy(y_pred_val, y_val)
 
             y_pred_test = clf.predict(x_test_dt)
-            acc_val = helpers.accuracy(y_pred_test, y_test)
+            acc_test = helpers.accuracy(y_pred_test, y_test)
 
             importances = clf.feature_importances_
 
